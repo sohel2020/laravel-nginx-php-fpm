@@ -1,6 +1,6 @@
 FROM php:7.0-fpm
 
-MAINTAINER Tran Duc Thang <thangtd90@gmail.com>
+MAINTAINER Tarikur Rahaman <tarikur@telenorhealth.com>
 
 ENV TERM xterm
 
@@ -21,10 +21,6 @@ RUN docker-php-ext-configure gd \
     --with-jpeg-dir=/usr/lib \
     --with-freetype-dir=/usr/include/freetype2
 
-# Install mongodb, xdebug
-RUN pecl install mongodb \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
 
 # Install extensions using the helper script provided by the base image
 RUN docker-php-ext-install \
@@ -32,10 +28,14 @@ RUN docker-php-ext-install \
     pdo_mysql \
     pdo_pgsql \
     gd \
-    zip
+    mbstring
+
+RUN pecl install -o -f redis \
+&&  rm -rf /tmp/pear \
+&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
 # Install other tools
-RUN apt-get install supervisor net-tools vim -y
+RUN apt-get install supervisor -y
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -49,7 +49,7 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN usermod -u 1000 www-data
-WORKDIR /var/www/laravel
+WORKDIR /var/www/html
 
 # Default command
 CMD ["/usr/bin/supervisord"]

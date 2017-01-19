@@ -5,6 +5,7 @@ MAINTAINER Tarikur Rahaman <tarikur@telenorhealth.com>
 ENV TERM xterm
 
 RUN apt-get update && apt-get install -y \
+    git \
     libpq-dev \
     curl \
     libjpeg-dev \

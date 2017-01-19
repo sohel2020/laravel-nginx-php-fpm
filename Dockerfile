@@ -20,7 +20,10 @@ RUN docker-php-ext-configure gd \
     --enable-gd-native-ttf \
     --with-jpeg-dir=/usr/lib \
     --with-freetype-dir=/usr/include/freetype2
-
+    
+# Install composer
+ADD https://getcomposer.org/composer.phar /usr/bin/composer
+RUN chmod 0755 /usr/bin/composer
 
 # Install extensions using the helper script provided by the base image
 RUN docker-php-ext-install \
